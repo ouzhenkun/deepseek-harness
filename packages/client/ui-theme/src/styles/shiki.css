@@ -16,6 +16,12 @@
   --shiki-token-string-expression: #2b8a3e;
   --shiki-token-punctuation: #495057;
   --shiki-token-link: #1971c2;
+  /* diff fence: removed (-) lines in the error hue, added (+) in the
+     success hue — hard-coded like the rest of the palette: the semantic
+     aliases live on body, so a :root var() reference would resolve to
+     nothing there and leave the diff lines uncolored. */
+  --shiki-token-deleted: #ec1313; /* dsw-static-red-600 */
+  --shiki-token-inserted: #22c55e; /* dsw-static-green-500 */
 }
 
 body[data-ds-dark-theme] {
@@ -28,4 +34,6 @@ body[data-ds-dark-theme] {
   --shiki-token-string-expression: #8ce99a;
   --shiki-token-punctuation: #ced4da;
   --shiki-token-link: #74c0fc;
+  --shiki-token-deleted: #f25a5a; /* dsw-static-red-400 */
+  --shiki-token-inserted: #22c55e; /* dsw-static-green-500 */
 }

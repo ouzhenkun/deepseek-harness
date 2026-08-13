@@ -5,9 +5,10 @@
  * theme package's token sheets as `--shiki-*` custom properties (light and
  * dark blocks), never here — the repo's tokens-only styling rule.
  *
- * Only the three markdown-fence and `run_code` grammars (TypeScript, shell,
- * JSON) load into the singleton at boot — the set every session renders. The
- * read card's wider extension set (the file-extension language hints the read
+ * Only the markdown-fence and `run_code` grammars (TypeScript, shell, JSON,
+ * plus the `diff` fence dialect, whose +/- lines resolve to the theme's
+ * deleted/inserted tokens) load into the singleton at boot — the set every
+ * session renders. The read card's wider extension set (the file-extension language hints the read
  * tool's `langFromPath` emits — `packages/fs/tool-fs`: python, rust, yaml,
  * markup, …) is imported lazily and registered the first time such a language
  * is requested, so a session that never opens a read card in one of those
@@ -22,6 +23,7 @@ import { createHighlighterCoreSync, createCssVariablesTheme } from 'shiki/core'
 import { createJavaScriptRegexEngine, defaultJavaScriptRegexConstructor } from 'shiki/engine/javascript'
 import langTs from '@shikijs/langs/typescript'
 import langBash from '@shikijs/langs/shellscript'
+import langDiff from '@shikijs/langs/diff'
 import langJson from '@shikijs/langs/json'
 import type { HighlighterCore } from 'shiki/core'
 import type { CSSProperties } from 'react'
@@ -39,7 +41,7 @@ type LangModule = { default: typeof langTs }
  * trade to keep the boot set to one JS-family grammar. The read card's wider
  * set loads lazily through {@link LAZY_GRAMMARS}.
  */
-const LANGS = [langTs, langBash, langJson]
+const LANGS = [langTs, langBash, langDiff, langJson]
 
 /**
  * The read card's extension grammars, each behind a dynamic import so its
@@ -101,6 +103,7 @@ const LANG_ALIASES = new Map<string, string>([
   ['zsh', 'shellscript'],
   ['json', 'json'],
   ['jsonc', 'json'],
+  ['diff', 'diff'],
   ['py', 'python'],
   ['python', 'python'],
   ['rb', 'ruby'],
@@ -160,6 +163,7 @@ const BOOT_GRAMMAR_WARMUPS = [
   { lang: 'typescript', code: 'const answer: number = 42' },
   { lang: 'shellscript', code: 'printf \'%s\\n\' "$HOME"' },
   { lang: 'json', code: '{"ready":true}' },
+  { lang: 'diff', code: '- old line\n+ new line\n@@ -1,2 +1,2 @@' },
 ] as const
 
 /** Construct and pre-tokenize the boot grammars outside the user-content scan budget. */
